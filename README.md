@@ -39,12 +39,13 @@ Anyway it's quite easy to reset a cluster from scratch keeping the current maste
 
 * PostgreSQL >= 9.4
 * etcd >= 2.0 or consul >=0.6
+* docker >= 1.11.0
 
 
-## build
+## Build
 
 ```
-./build
+make
 ```
 
 ## Quick start and examples
