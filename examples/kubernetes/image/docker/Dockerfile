@@ -1,4 +1,4 @@
-FROM fedora:22
+FROM fedora:24
 
 RUN dnf -y install postgresql-server postgresql hostname
 
