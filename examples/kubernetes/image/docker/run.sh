@@ -1,4 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
 
 function setup() {
   # use hostname command to get our pod's ip until downward api are less racy (sometimes the podIP from downward api is empty)
