@@ -4,6 +4,10 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+KEEPER=${KEEPER-}
+SENTINEL=${SENTINEL-}
+PROXY=${PROXY-}
+
 function setup() {
   # use hostname command to get our pod's ip until downward api are less racy (sometimes the podIP from downward api is empty)
   export POD_IP=$(hostname -i)
