@@ -8,24 +8,26 @@ KEEPER=${KEEPER-}
 SENTINEL=${SENTINEL-}
 PROXY=${PROXY-}
 
+DATA_DIR=${DATA_DIR-/stolon-data}
+
 function setup() {
   # use hostname command to get our pod's ip until downward api are less racy (sometimes the podIP from downward api is empty)
   export POD_IP=$(hostname -i)
 }
 
 function checkdata() {
-  if [[ ! -e /stolon-data ]]; then
+  if [[ ! -e "$DATA_DIR" ]]; then
     echo "stolon data doesn't exist, data won't be persistent!"
-    mkdir /stolon-data
+    mkdir "$DATA_DIR"
   fi
-  chown stolon:stolon /stolon-data
+  chown stolon:stolon "$DATA_DIR"
 }
 
 function launchkeeper() {
   checkdata
   export STKEEPER_LISTEN_ADDRESS=$POD_IP
   export STKEEPER_PG_LISTEN_ADDRESS=$POD_IP
-  su stolon -c "stolon-keeper --data-dir /stolon-data"
+  su stolon -c "stolon-keeper --data-dir $DATA_DIR"
 }
 
 function launchsentinel() {
