@@ -66,6 +66,7 @@ type config struct {
 	port                    string
 	debug                   bool
 	pgListenAddress         string
+	pgMaxConnections        string
 	pgPort                  string
 	pgBinPath               string
 	pgConfDir               string
@@ -95,6 +96,7 @@ func init() {
 	cmdKeeper.PersistentFlags().StringVar(&cfg.listenAddress, "listen-address", "localhost", "keeper listening address")
 	cmdKeeper.PersistentFlags().StringVar(&cfg.port, "port", "5431", "keeper listening port")
 	cmdKeeper.PersistentFlags().StringVar(&cfg.pgListenAddress, "pg-listen-address", "localhost", "postgresql instance listening address")
+	cmdKeeper.PersistentFlags().StringVar(&cfg.pgMaxConnections, "pg-max-connections", "500", "number of max accepted connections for Postgres")
 	cmdKeeper.PersistentFlags().StringVar(&cfg.pgPort, "pg-port", "5432", "postgresql instance listening port")
 	cmdKeeper.PersistentFlags().StringVar(&cfg.pgBinPath, "pg-bin-path", "", "absolute path to postgresql binaries. If empty they will be searched in the current PATH")
 	cmdKeeper.PersistentFlags().StringVar(&cfg.pgConfDir, "pg-conf-dir", "", "absolute path to user provided postgres configuration. If empty a default dir under $dataDir/postgres/conf.d will be used")
@@ -186,6 +188,7 @@ func (p *PostgresKeeper) createPGParameters(followersIDs []string) pg.Parameters
 	}
 
 	pgParameters["listen_addresses"] = fmt.Sprintf("127.0.0.1,%s", p.pgListenAddress)
+	pgParameters["max_connections"] = p.pgMaxConnections
 	pgParameters["port"] = p.pgPort
 	pgParameters["max_replication_slots"] = strconv.FormatUint(uint64(p.clusterConfig.MaxStandbysPerSender), 10)
 	// Add some more wal senders, since also the keeper will use them
@@ -218,6 +221,7 @@ type PostgresKeeper struct {
 	port                string
 	debug               bool
 	pgListenAddress     string
+	pgMaxConnections    string
 	pgPort              string
 	pgBinPath           string
 	pgConfDir           string
@@ -263,6 +267,7 @@ func NewPostgresKeeper(id string, cfg *config, stop chan bool, end chan error) (
 		port:                cfg.port,
 		debug:               cfg.debug,
 		pgListenAddress:     cfg.pgListenAddress,
+		pgMaxConnections:    cfg.pgMaxConnections,
 		pgPort:              cfg.pgPort,
 		pgBinPath:           cfg.pgBinPath,
 		pgConfDir:           cfg.pgConfDir,
